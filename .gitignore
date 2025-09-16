@@ -1,6 +1,6 @@
 # Nestjs specific
-/dist
-/node_modules
+/backend/dist
+/backend/node_modules
 /build
 /tmp
 
@@ -14,7 +14,7 @@ yarn-error.log*
 lerna-debug.log*
 
 # dotenv environment variable files
-.env
+/backend/.env
 .env.development
 .env.test
 .env.production
