@@ -4,10 +4,12 @@ import {
   Body,
   Res,
   UnauthorizedException,
+  Req,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { UsersService } from "../users/users.service";
-import { Response } from "express";
+import { Response, Request } from "express";
+import * as jwt from "jsonwebtoken";
 
 @Controller("auth")
 export class AuthController {
@@ -43,23 +45,64 @@ export class AuthController {
 
     const token = await this.authService.login(user);
 
-    // ✅ Set JWT in HttpOnly cookie
+    // ✅ Access Token (15 min)
     res.cookie("token", token.access_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // false in dev
-      sameSite: "lax", // Change from 'strict' to allow cross-port
-      maxAge: 1000 * 60 * 60,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 15, // 15 mins
       path: "/",
-      domain: "localhost", // Key fix: Share across localhost ports
+    });
+
+    // ✅ Refresh Token (7 days)
+    res.cookie("refreshToken", token.refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      path: "/",
     });
 
     return { message: "Login successful" };
   }
 
+  @Post("refresh")
+  async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const refreshToken = req.cookies["refreshToken"];
+    if (!refreshToken) {
+      throw new UnauthorizedException("No refresh token provided");
+    }
+
+    try {
+      const payload = jwt.verify(
+        refreshToken,
+        process.env.JWT_SECRET || "replace_this_with_a_strong_secret"
+      ) as any;
+
+      const newAccessToken = jwt.sign(
+        { email: payload.email, sub: payload.sub },
+        process.env.JWT_SECRET || "replace_this_with_a_strong_secret",
+        { expiresIn: "15m" }
+      );
+
+      res.cookie("token", newAccessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 1000 * 60 * 15,
+        path: "/",
+      });
+
+      return { message: "Token refreshed" };
+    } catch (err) {
+      throw new UnauthorizedException("Invalid or expired refresh token");
+    }
+  }
+
   @Post("logout")
   async logout(@Res({ passthrough: true }) res: Response) {
-    // Clear the cookie
     res.clearCookie("token", { path: "/" });
+    res.clearCookie("refreshToken", { path: "/" });
     return { message: "Logged out successfully" };
   }
 }
