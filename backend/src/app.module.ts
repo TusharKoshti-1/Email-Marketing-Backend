@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { CampaignsModule } from './campaigns/campaigns.module';
 import { AuthModule } from './auth/auth.module';
+import { DomainsModule } from './domains/domains.module'; // NEW
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     CampaignsModule,
     AuthModule,
+    DomainsModule, // NEW
   ],
 })
 export class AppModule {}

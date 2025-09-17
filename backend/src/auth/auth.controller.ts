@@ -43,7 +43,7 @@ export class AuthController {
       throw new UnauthorizedException("Invalid credentials");
     }
 
-    const token = await this.authService.login(user);
+    const token = await this.authService.login(body.email, body.password);
 
     // ✅ Access Token (15 min)
     res.cookie("token", token.access_token, {
