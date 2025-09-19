@@ -63,6 +63,8 @@ export class AuthController {
       path: "/",
     });
 
+    console.log(`${token.access_token}`);
+
     return { message: "Login successful" };
   }
 
