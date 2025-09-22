@@ -50,7 +50,8 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: 1000 * 60 * 15, // 15 mins
+      maxAge: 1000 * 60 * 15,
+      path: "/", // 15 mins
     });
 
     // ✅ Refresh Token (7 days)
@@ -58,7 +59,8 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      path: "/", // 7 days
     });
 
     console.log(`${token.access_token}`);
@@ -90,6 +92,7 @@ export class AuthController {
         secure: true,
         sameSite: "none",
         maxAge: 1000 * 60 * 15,
+        path: "/",
       });
 
       return { message: "Token refreshed" };
