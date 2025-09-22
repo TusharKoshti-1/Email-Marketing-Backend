@@ -49,7 +49,7 @@ export class AuthController {
     res.cookie("token", token.access_token, {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: "lax",
       maxAge: 1000 * 60 * 15,
       path: "/", // 15 mins
     });
@@ -58,7 +58,7 @@ export class AuthController {
     res.cookie("refreshToken", token.refresh_token, {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: "lax",
       maxAge: 1000 * 60 * 60 * 24 * 7,
       path: "/", // 7 days
     });
@@ -90,7 +90,7 @@ export class AuthController {
       res.cookie("token", newAccessToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "none",
+        sameSite: "lax",
         maxAge: 1000 * 60 * 15,
         path: "/",
       });
