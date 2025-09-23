@@ -45,24 +45,22 @@ export class AuthController {
 
     const token = await this.authService.login(body.email, body.password);
 
-    // ✅ Access Token (15 min)
+    // Access Token (15 min)
     res.cookie("token", token.access_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      partitioned: true,
+      httpOnly: false,
+      secure: false,
+      sameSite: "none", // Same-site, no partitioning needed
       maxAge: 1000 * 60 * 15,
-      path: "/", // 15 mins
+      path: "/",
     });
 
-    // ✅ Refresh Token (7 days)
+    // Refresh Token (7 days)
     res.cookie("refreshToken", token.refresh_token, {
-      httpOnly: true,
-      secure: true,
+      httpOnly: false,
+      secure: false,
       sameSite: "none",
-      partitioned: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      path: "/", // 7 days
+      path: "/",
     });
 
     console.log(`${token.access_token}`);
@@ -90,10 +88,9 @@ export class AuthController {
       );
 
       res.cookie("token", newAccessToken, {
-        httpOnly: true,
-        secure: true,
+        httpOnly: false,
+        secure: false,
         sameSite: "none",
-        partitioned: true,
         maxAge: 1000 * 60 * 15,
         path: "/",
       });
@@ -106,8 +103,8 @@ export class AuthController {
 
   @Post("logout")
   async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie("token", { path: "/" });
-    res.clearCookie("refreshToken", { path: "/" });
+    res.clearCookie("token", { path: "/", domain: ".mydomain.com" });
+    res.clearCookie("refreshToken", { path: "/", domain: ".mydomain.com" });
     return { message: "Logged out successfully" };
   }
 }
