@@ -45,27 +45,27 @@ export class AuthController {
 
     const token = await this.authService.login(body.email, body.password);
 
-    // Access Token (15 min)
-    res.cookie("token", token.access_token, {
-      httpOnly: false,
-      secure: false,
-      sameSite: "none", // Same-site, no partitioning needed
-      maxAge: 1000 * 60 * 15,
-      path: "/",
-    });
+    // // Access Token (15 min)
+    // res.cookie("token", token.access_token, {
+    //   httpOnly: false,
+    //   secure: false,
+    //   sameSite: "none", // Same-site, no partitioning needed
+    //   maxAge: 1000 * 60 * 15,
+    //   path: "/",
+    // });
 
-    // Refresh Token (7 days)
-    res.cookie("refreshToken", token.refresh_token, {
-      httpOnly: false,
-      secure: false,
-      sameSite: "none",
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      path: "/",
-    });
+    // // Refresh Token (7 days)
+    // res.cookie("refreshToken", token.refresh_token, {
+    //   httpOnly: false,
+    //   secure: false,
+    //   sameSite: "none",
+    //   maxAge: 1000 * 60 * 60 * 24 * 7,
+    //   path: "/",
+    // });
 
     console.log(`${token.access_token}`);
 
-    return { message: "Login successful" };
+    return { message: "Login successful" , token: token.access_token  };
   }
 
   @Post("refresh")
