@@ -9,7 +9,7 @@ async function bootstrap() {
   app.use(cookieParser()); // 🔑 enables req.cookies
 
   app.enableCors({
-    origin: ["https://nesskai-email-marketing.netlify.app","http://localhost:3000"], // Specific frontend origin
+    origin: ["https://nesskai-email-marketing.netlify.app","http://localhost:3000","https://email-marketing-frontend.onrender.com"], // Specific frontend origin
     credentials: true, // Allow cookies
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], // Explicit methods
     allowedHeaders: ["Content-Type", "Authorization"], // Explicit headers
